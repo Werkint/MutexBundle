@@ -1,0 +1,19 @@
+services:
+  emisser_core.semlock.logger.annotation_driver:
+    class: Werkint\Bundle\MutexBundle\Service\SemLock\Metadata\AnnotationDriver
+    arguments:
+      - @annotation_reader
+  emisser_core.semlock.logger.metadata_factory:
+    class: Metadata\MetadataFactory
+    arguments:
+      - @emisser_core.semlock.logger.annotation_driver
+  emisser_core.semlock.logger.pointcut:
+    class: Werkint\Bundle\MutexBundle\Service\SemLock\Pointcut\SemLockPointcut
+    arguments:
+      - @emisser_core.semlock.logger.metadata_factory
+    tags:
+      - { name: jms_aop.pointcut, interceptor: emisser_core.semlock.logger.interceptor }
+  emisser_core.semlock.logger.interceptor:
+    class: Werkint\Bundle\MutexBundle\Service\SemLock\Pointcut\PointcutInterceptor
+    arguments:
+      - @emisser_core.semlock.logger.metadata_factory

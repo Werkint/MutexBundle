@@ -1,0 +1,22 @@
+{
+  "name": "werkint/mutex-bundle",
+  "type": "symfony-bundle",
+  "license": "GPL",
+  "authors": [
+    {
+      "name": "Bogdan Yurov",
+      "email": "bogdan@yurov.me"
+    }
+  ],
+  "require": {
+    "symfony/framework-bundle": "*",
+
+    "php": ">=5.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Werkint\\Bundle\\MutexBundle\\": "src"
+    }
+  },
+  "minimum-stability": "dev"
+}
