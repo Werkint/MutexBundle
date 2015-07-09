@@ -3,9 +3,10 @@ namespace Werkint\Bundle\MutexBundle\Service\SemLock\Pointcut;
 
 use CG\Proxy\MethodInterceptorInterface;
 use CG\Proxy\MethodInvocation;
-use Werkint\Bundle\MutexBundle\Service\SemLock\Metadata\MethodMetadata;
 use Metadata\MetadataFactoryInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Werkint\Bundle\MutexBundle\Service\MutexManagerInterface;
+use Werkint\Bundle\MutexBundle\Service\SemLock\Metadata\MethodMetadata;
 
 /**
  * Предоставляет информацию
@@ -16,14 +17,14 @@ class PointcutInterceptor implements
     MethodInterceptorInterface
 {
     protected $metadataFactory;
+    protected $mutexManager;
 
-    /**
-     * @param MetadataFactoryInterface $metadataFactory
-     */
     public function __construct(
-        MetadataFactoryInterface $metadataFactory
+        MetadataFactoryInterface $metadataFactory,
+        MutexManagerInterface $mutexManager
     ) {
         $this->metadataFactory = $metadataFactory;
+        $this->mutexManager = $mutexManager;
     }
 
     /**
@@ -47,10 +48,14 @@ class PointcutInterceptor implements
             $key = $lang->evaluate(substr($key, 1), $attrs);
         }
 
-        $fp = fopen('/tmp/SEMLOCK_' . sha1($key), 'w');
-        flock($fp, LOCK_UN);
-        $ret = $invocation->proceed();
-        fclose($fp);
+        try {
+            $this->mutexManager->lock($key);
+            $ret = $invocation->proceed();
+            $this->mutexManager->unlock($key);
+        } catch (\Exception $e) {
+            $this->mutexManager->unlock($key);
+            throw $e;
+        }
 
         return $ret;
     }
