@@ -1,4 +1,9 @@
 services:
+  werkint_mutex.mutexmanager:
+    class: Werkint\Bundle\MutexBundle\Service\MutexManager
+    arguments:
+      - @=parameter('werkint_mutex')['lockfiles_dir']
+
   werkint_mutex.semlock.annotation_driver:
     class: Werkint\Bundle\MutexBundle\Service\SemLock\Metadata\AnnotationDriver
     arguments:
@@ -11,6 +16,7 @@ services:
     class: Werkint\Bundle\MutexBundle\Service\SemLock\Pointcut\SemLockPointcut
     arguments:
       - @werkint_mutex.semlock.metadata_factory
+      - %kernel.debug%
     tags:
       - { name: jms_aop.pointcut, interceptor: werkint_mutex.semlock.interceptor }
   werkint_mutex.semlock.interceptor:

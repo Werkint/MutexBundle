@@ -1,10 +1,10 @@
 <?php
 namespace Werkint\Bundle\MutexBundle\Service\SemLock\Pointcut;
 
-use Werkint\Bundle\MutexBundle\Service\SemLock\Metadata\MethodMetadata;
-use Werkint\Bundle\MutexBundle\Service\SemLock\SemLockAwareInterface;
 use JMS\AopBundle\Aop\PointcutInterface;
 use Metadata\MetadataFactoryInterface;
+use Werkint\Bundle\MutexBundle\Service\SemLock\Metadata\MethodMetadata;
+use Werkint\Bundle\MutexBundle\Service\SemLock\SemLockAwareInterface;
 
 /**
  * Ищет сервисы для предоставления информации
@@ -16,14 +16,18 @@ class SemLockPointcut implements PointcutInterface
     const TARGET_CLASS = SemLockAwareInterface::class;
 
     protected $metadataFactory;
+    protected $isDebug;
 
     /**
      * @param MetadataFactoryInterface $metadataFactory
+     * @param bool                     $isDebug
      */
     public function __construct(
-        MetadataFactoryInterface $metadataFactory
+        MetadataFactoryInterface $metadataFactory,
+        $isDebug
     ) {
         $this->metadataFactory = $metadataFactory;
+        $this->isDebug = $isDebug;
     }
 
 
@@ -43,7 +47,11 @@ class SemLockPointcut implements PointcutInterface
             }
         }
 
-        throw new \Exception('Class does not have any semlock methods');
+        if ($this->isDebug) {
+            throw new \Exception('Class does not have any semlock methods');
+        }
+
+        return false;
     }
 
     /**

@@ -33,6 +33,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder
             ->root($this->alias)
             ->children()
+                ->scalarNode('lockfiles_dir')->isRequired()->end()
             ->end()
         ;
         // @formatter:on
