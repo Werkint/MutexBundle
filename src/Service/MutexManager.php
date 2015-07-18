@@ -28,7 +28,7 @@ class MutexManager implements
     public function lock($class, $waitTime = null)
     {
         if (isset($this->locked[$class])) {
-            $this->locked[$class]['counter']++;
+            $this->locked[$class]['count']++;
             return true;
         }
 
