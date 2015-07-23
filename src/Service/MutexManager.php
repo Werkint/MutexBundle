@@ -37,7 +37,7 @@ class MutexManager implements
 
         $locked = false;
         if (!$waitTime) {
-            flock($fp, LOCK_UN);
+            flock($fp, LOCK_EX);
             $locked = true;
         } else {
             while ($waitTime > 0) {
