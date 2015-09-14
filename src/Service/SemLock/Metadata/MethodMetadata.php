@@ -13,7 +13,11 @@ class MethodMetadata extends BaseMethodMetadata
     /**
      * @var string
      */
-    protected $key;
+    private $key;
+    /**
+     * @var int
+     */
+    private $waitTimeout;
 
     // -- Accessors ---------------------------------------
 
@@ -34,4 +38,22 @@ class MethodMetadata extends BaseMethodMetadata
         $this->key = $key;
         return $this;
     }
-} 
+
+    /**
+     * @return int
+     */
+    public function getWaitTimeout()
+    {
+        return $this->waitTimeout;
+    }
+
+    /**
+     * @param int $waitTimeout
+     * @return $this
+     */
+    public function setWaitTimeout($waitTimeout)
+    {
+        $this->waitTimeout = $waitTimeout;
+        return $this;
+    }
+}

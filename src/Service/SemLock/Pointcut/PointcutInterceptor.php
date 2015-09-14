@@ -49,7 +49,7 @@ class PointcutInterceptor implements
         }
 
         try {
-            $this->mutexManager->lock($key);
+            $this->mutexManager->lock($key, $metadata->getWaitTimeout());
             $ret = $invocation->proceed();
             $this->mutexManager->unlock($key);
         } catch (\Exception $e) {

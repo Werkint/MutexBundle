@@ -13,7 +13,16 @@ use Doctrine\ORM\Mapping\Annotation;
  */
 class SemLock
 {
-    protected $key;
+    const DEFAULT_TIMEOUT = 40;
+
+    /**
+     * @var int
+     */
+    private $waitTimeout;
+    /**
+     * @var string|null
+     */
+    private $key;
 
     /**
      * @param array $data
@@ -21,15 +30,24 @@ class SemLock
     public function __construct(array $data)
     {
         $this->key = isset($data['key']) ? $data['key'] : null;
+        $this->waitTimeout = isset($data['waitTimeout']) ? $data['waitTimeout'] : static::DEFAULT_TIMEOUT;
     }
 
     // -- Accessors ---------------------------------------
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getKey()
     {
         return $this->key;
     }
-} 
+
+    /**
+     * @return int|null
+     */
+    public function getWaitTimeout()
+    {
+        return $this->waitTimeout;
+    }
+}

@@ -2,9 +2,9 @@
 namespace Werkint\Bundle\MutexBundle\Service\SemLock\Metadata;
 
 use Doctrine\Common\Annotations\Reader;
-use Werkint\Bundle\MutexBundle\Service\SemLock\Annotation\SemLock;
 use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
+use Werkint\Bundle\MutexBundle\Service\SemLock\Annotation\SemLock;
 
 /**
  * TODO: write "AnnotationDriver" info
@@ -41,7 +41,13 @@ class AnnotationDriver implements
 
             if ($annotation instanceof SemLock) {
                 $propertyMetadata = new MethodMetadata($class->getName(), $method->getName());
+
+                if (!$annotation->getKey()) {
+                    throw new \Exception('Lock key not specified');
+                }
+
                 $propertyMetadata->setKey($annotation->getKey());
+                $propertyMetadata->setWaitTimeout($annotation->getWaitTimeout());
                 $classMetadata->addMethodMetadata($propertyMetadata);
             }
         }
