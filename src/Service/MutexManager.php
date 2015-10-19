@@ -22,6 +22,11 @@ class MutexManager implements
 
     protected $locked = [];
 
+    public function getAllLocks()
+    {
+        return $this->locked;
+    }
+
     /**
      * @inheritdoc
      */
@@ -68,20 +73,27 @@ class MutexManager implements
     /**
      * @inheritdoc
      */
-    public function unlock($class)
+    public function unlock($class, $forced = false)
     {
         if (!isset($this->locked[$class])) {
             return false;
         }
 
         $row = $this->locked[$class];
-        if (--$row['count'] === 0) {
+        if ($forced || --$row['count'] === 0) {
             flock($row['res'], LOCK_UN);
             fclose($row['res']);
             unset($this->locked[$class]);
         }
 
         return true;
+    }
+
+    public function unlockAll()
+    {
+        foreach ($this->locked as $class => $obj) {
+            $this->unlock($class, true);
+        }
     }
 
     /**

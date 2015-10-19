@@ -20,4 +20,6 @@ interface MutexManagerInterface
      * @return boolean
      */
     public function unlock($class);
+
+    public function unlockAll();
 }
